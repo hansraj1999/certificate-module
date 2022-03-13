@@ -113,7 +113,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((314, 1257), designation, font=myFont5, fill=(209, 182, 86), anchor='mm')
             d1.text((1215, 1211), by2, font=myFont4, fill=(0, 0, 0), anchor='mm')
             d1.text((1215, 1260), designation2, font=myFont5, fill=(209, 182, 86), anchor='mm')
-            img.show()
+            img.save(f"generated_certi/{u_id}gen_certi.png")
 
         elif ceri_template == 2:
 
@@ -142,7 +142,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((4410, 3295), by2, font=myFont3, fill=(87, 84, 81), anchor='mm')
             d1.text((4410, 3437), designation2, font=myFont4, fill=(90, 84, 81), anchor='mm')
 
-            img.show()
+            img.save(f"generated_certi/{u_id}gen_certi.png")
 
         elif ceri_template == 3:
 
@@ -174,7 +174,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1584, 1174), by2, font=myFont5, fill=(255, 157, 43), anchor='mm')
             d1.text((1584, 1214), designation2, font=myFont6, fill=(0, 0, 0), anchor='mm')
 
-            img.show()
+            img.save(f"generated_certi/{u_id}gen_certi.png")
 
 
         elif ceri_template == 4:
@@ -207,7 +207,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1612, 1241), designation, font=myFont5, fill=(41, 169, 225), anchor='mm')
             d1.text((746, 1202), by2, font=myFont4, fill=(255, 255, 225), anchor='mm')
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
-            img.show()
+            img.save(f"generated_certi/{u_id}_gen_certi.png")
 
             with open("css.csv", "w") as f:
                 f.truncate(0)
