@@ -68,7 +68,8 @@ def stage2(ceri_template: int, db: Session):
     certi = pd.read_csv('css.csv')
     no_of_certi=len(certi)
     index = int(geting_index['id'])-no_of_certi+1
-    querry=db.query(models.Upload).filter(models.Upload.id>=index).all()
+    querry=db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1, models.Upload.by2
+                    , models.Upload.designation1, models.Upload.designation2, models.Upload.name).filter(models.Upload.id >= index).all()
 
     for i in querry:
 
