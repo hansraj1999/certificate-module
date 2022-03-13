@@ -18,7 +18,14 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
 def stage1(request: schemas.Upload, db: Session = Depends(get_db)):
     return admin.stage1(db, request)
 
-@router.post('/stage2',status_code=status.HTTP_201_CREATED)
+
+@router.get('/stage2',status_code=status.HTTP_201_CREATED)
 def stage2(select: int, db: Session = Depends(get_db)):
     return admin.stage2(select, db)
+
+
+@router.get('/show_all')
+def show_all(db: Session = Depends(get_db)):
+    return admin.show_all(db)
+
 
