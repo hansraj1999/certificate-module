@@ -9,6 +9,7 @@ import csv
 import textwrap
 import pandas as pd
 
+
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
     return rows
@@ -207,14 +208,13 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1612, 1241), designation, font=myFont5, fill=(41, 169, 225), anchor='mm')
             d1.text((746, 1202), by2, font=myFont4, fill=(255, 255, 225), anchor='mm')
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
-            img.save(f"generated_certi/{u_id}_gen_certi.png")
 
-            with open("css.csv", "w") as f:
-                f.truncate(0)
-            return 'hey'
+            img.save(f"generated_certi/{u_id}_gen_certi.png")
         else:
             return "Template not found"
-
+    with open("css.csv", "w") as f:
+        f.truncate(0)
+    return 'storted in generated folder'
 
 
 
