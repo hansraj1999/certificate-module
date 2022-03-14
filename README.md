@@ -1,2 +1,2 @@
 # certificate-module
-about: admin uploading certificates and users can verify that certificates online
+about: admin can generate certificates and users can verify that certificates online

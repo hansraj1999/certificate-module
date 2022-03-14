@@ -12,6 +12,7 @@ class UploadBase(BaseModel):
     certi_of: str
     name: str
 
+
 class Upload(BaseModel):
     date_uploaded: str
     by1: str
@@ -20,7 +21,6 @@ class Upload(BaseModel):
     designation2: str
     certi_for: str
     certi_of: str
-
 
     class Config:
         orm_mode = True

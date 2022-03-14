@@ -15,7 +15,7 @@ def show_all(db: Session):
     return rows
 
 
-def upload_csv(db: Session, name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
+def upload_csv( name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
     if not css.filename.endswith(".csv"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only Csv file")
     else:
@@ -69,7 +69,7 @@ def stage2(ceri_template: int, db: Session):
     certi = pd.read_csv('css.csv')
     no_of_certi=len(certi)
     index = int(geting_index['id'])-no_of_certi+1
-    querry=db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1, models.Upload.by2
+    querry = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1, models.Upload.by2
                     , models.Upload.designation1, models.Upload.designation2, models.Upload.name).filter(models.Upload.id >= index).all()
 
     for i in querry:
@@ -214,6 +214,7 @@ def stage2(ceri_template: int, db: Session):
             return "Template not found"
     with open("css.csv", "w") as f:
         f.truncate(0)
+
     return 'storted in generated folder'
 
 

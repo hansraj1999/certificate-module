@@ -1,6 +1,7 @@
 from database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, DATE
 
+
 class Upload(Base):
     __tablename__ = "data"
 
