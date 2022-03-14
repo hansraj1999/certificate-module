@@ -4,14 +4,7 @@ from repository import admin
 from database import get_db
 import schemas
 from fastapi.responses import HTMLResponse
-from frontend import test1
 router = APIRouter(tags=['admin'], prefix='/admin')
-
-
-@router.get('/test', response_class=HTMLResponse)
-async def test(request: Request):
-    return test1.a
-
 
 @router.post('/uploadcsv', status_code=status.HTTP_201_CREATED)
 async def upload_csv(name_in_which_col: int = Form(...), email_in_which_col: int = Form(...), css: UploadFile = File(...)):
