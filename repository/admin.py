@@ -15,7 +15,7 @@ def show_all(db: Session):
     return rows
 
 
-def upload_csv( name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
+def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
     if not css.filename.endswith(".csv"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only Csv file")
     else:
