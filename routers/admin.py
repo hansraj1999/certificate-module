@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, status, UploadFile, File, Form, Request
+from fastapi import APIRouter, Depends, status, UploadFile, File, Form
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from repository import admin
 from database import get_db
 import schemas
-from fastapi.responses import HTMLResponse
+
 router = APIRouter(tags=['admin'], prefix='/admin')
+
 
 @router.post('/uploadcsv', status_code=status.HTTP_201_CREATED)
 async def upload_csv(name_in_which_col: int = Form(...), email_in_which_col: int = Form(...), css: UploadFile = File(...)):
@@ -12,7 +14,7 @@ async def upload_csv(name_in_which_col: int = Form(...), email_in_which_col: int
 
 
 @router.post('/stage1', status_code=status.HTTP_201_CREATED)
-def stage1(request: schemas.Upload, db: Session = Depends(get_db)):
+async def stage1(request: schemas.Upload, db: Session = Depends(get_db)):
     return admin.stage1(db, request)
 
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>temp</title>
+</head>
+
+<body>
+    <h1>data</h1>
+    <form method="post" enctype="multipart/form-data" id="formElem">
+        <input type="text" name="date_uploaded" id='1'>
+        <input type="text" name="by1" id='2'>
+        <input type="text" name="designation1" id='3'>
+        <input type="text" name="by2" id='4'>
+        <input type="text" name="designation2" id='5'>
+        <input type="text" name="certi_for" id='6'>
+        <input type="text" name="certi_of" id='7'>
+        <input type="submit">
+    </form>
+
+<script>
+    formElem.onsubmit = async (e) => {
+      e.preventDefault();
+      var form = document.querySelector("#formElem");
+
+        data = {
+          date_uploaded : form.querySelector('input[name="date_uploaded"]').value,
+          by1 : form.querySelector('input[name="by1"]').value,
+          designation1 : form.querySelector('input[name="designation1"]').value,
+          by2: form.querySelector('input[name="by2"]').value,
+          designation2: form.querySelector('input[name="designation2"]').value,
+          certi_for: form.querySelector('input[name="certi_for"]').value,
+          certi_of: form.querySelector('input[name="certi_of"]').value
+        }
+        let response = await fetch('http://127.0.0.1:8000/admin/stage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+        })
+        let text = await response.text(); // read response body as text
+    };
+
+</script>
+
+</body>
+
+</html>

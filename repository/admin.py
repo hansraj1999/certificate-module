@@ -45,7 +45,7 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
         if converted_csv.empty:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"error in uploading the csv file")
 
-        return converted_csv
+        return {'response': 'True'}
 
 
 def stage1(db: Session, request: schemas.Upload):
@@ -212,6 +212,7 @@ def stage2(ceri_template: int, db: Session):
             img.save(f"generated_certi/{u_id}_gen_certi.png")
         else:
             return "Template not found"
+
     with open("css.csv", "w") as f:
         f.truncate(0)
 
