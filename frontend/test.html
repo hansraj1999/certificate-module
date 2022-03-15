@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>temp</title>
+</head>
+
+<body>
+    <h1>data</h1>
+    <form method="post" enctype="multipart/form-data" id="formElem">
+        <input type="text" name="name_in_which_col" id='1'>
+        <input type="text" name="email_in_which_col" id='2'>
+        <input type="file" name="css" id="css">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
+<script>
+    formElem.onsubmit = async (e) => {
+    e.preventDefault();
+    let response = await fetch('http://127.0.0.1:8000/admin/uploadcsv', {
+      method: 'POST',
+      body: new FormData(formElem)
+    });
+    let result = await response.json();
+    if(result['response']=="True"){
+        window.location.href="test2.html";
+    }
+  };
+</script>
