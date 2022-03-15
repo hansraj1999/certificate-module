@@ -9,4 +9,3 @@ mysql-connector-python
 pandas
 pillow
 pydantic
-gunicorn

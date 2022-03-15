@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from routers import admin
 import models
+import uvicorn
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -24,4 +25,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app,port=8000,host="0.0.0.0")
