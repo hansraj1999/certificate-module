@@ -4,7 +4,9 @@ import models
 import uvicorn
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-import os,glob
+import os
+import shutil
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 app.include_router(admin.router)
@@ -26,9 +28,9 @@ app.add_middleware(
 )
 
 
-@app.get('/')
+@app.get('/',response_class=FileResponse)
 def home():
-    return os.listdir()
+    return shutil.make_archive('new', 'zip', 'generated_certi')
 @app.get('/1')
 def home():
     return os.path.abspath("")
