@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status, UploadFile, File, Form
 from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from repository import admin
 from database import get_db
@@ -18,7 +19,7 @@ async def stage1(request: schemas.Upload, db: Session = Depends(get_db)):
     return admin.stage1(db, request)
 
 
-@router.get('/stage2', status_code=status.HTTP_201_CREATED)
+@router.get('/stage2', response_class=FileResponse, status_code=status.HTTP_201_CREATED)
 def stage2(select: int, db: Session = Depends(get_db)):
     return admin.stage2(select, db)
 

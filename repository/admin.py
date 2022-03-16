@@ -1,3 +1,4 @@
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from fastapi import UploadFile, File
@@ -19,17 +20,14 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
     if not css.filename.endswith(".csv"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only Csv file")
     else:
-
         header = [1, 2]
         temp = [name_in_which_col, email_in_which_col]
         temp_set = set(temp)
 
         if len(temp_set) != len(temp):
             return "error can have only 2 columns"
-
         else:
             dataframe = pd.read_csv(css.file, index_col=False, delimiter=',')
-
             if name_in_which_col == 1:
                 header[0] = 'full_name'
             elif name_in_which_col == 2:
@@ -38,13 +36,20 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
                 header[0] = 'email'
             elif email_in_which_col == 2:
                 header[1] = 'email'
-            dataframe.to_csv('css.csv', index=False, header=header)
+
+            with open("css.csv", "w") as f:
+                f.truncate(0)
+                if header == ['full_name', 'email']:
+                    f.writelines('full_name'',' 'email\n')
+                else:
+                    f.writelines('email'',''full_name\n')
+
+            dataframe.to_csv('css.csv', index=False, mode='a')
             dataframe = pd.read_csv('css.csv')
             converted_csv = dataframe
 
         if converted_csv.empty:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"error in uploading the csv file")
-
         return {'response': 'True'}
 
 
@@ -210,13 +215,14 @@ def stage2(ceri_template: int, db: Session):
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
 
             img.save(f"generated_certi/{u_id}_gen_certi.png")
+            return f'generated_certi/{u_id}_gen_certi.png'
         else:
             return "Template not found"
 
     with open("css.csv", "w") as f:
         f.truncate(0)
 
-    return 'storted in generated folder'
+    return f'generated_certi/{u_id}_gen_certi.png'
 
 
 
