@@ -4,13 +4,10 @@ from fastapi import HTTPException, status
 from fastapi import UploadFile, File
 from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
-import schemas
-import models
-import csv
-import textwrap
+import schemas, os, models, csv, textwrap, shutil,zipfile
 import pandas as pd
-import os
-import shutil
+
+
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -70,6 +67,16 @@ def stage1(db: Session, request: schemas.Upload):
 
 
 def stage2(ceri_template: int, db: Session):
+
+    if os.path.exists('generated_certi'):
+        if len(os.listdir('generated_certi/')) != 0:
+            shutil.rmtree('generated_certi/')
+            os.mkdir('generated_certi')
+    else:
+        os.mkdir('generated_certi')
+
+
+
     geting_index = db.query(models.Upload.id).order_by(models.Upload.id.desc()).first()
     font_id = 1
     certi = pd.read_csv('css.csv')
@@ -77,6 +84,7 @@ def stage2(ceri_template: int, db: Session):
     index = int(geting_index['id'])-no_of_certi+1
     querry = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1, models.Upload.by2
                     , models.Upload.designation1, models.Upload.designation2, models.Upload.name).filter(models.Upload.id >= index).all()
+
 
     for i in querry:
 
@@ -120,7 +128,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((314, 1257), designation, font=myFont5, fill=(209, 182, 86), anchor='mm')
             d1.text((1215, 1211), by2, font=myFont4, fill=(0, 0, 0), anchor='mm')
             d1.text((1215, 1260), designation2, font=myFont5, fill=(209, 182, 86), anchor='mm')
-            img.save(f"generated_certi/{u_id}gen_certi.png")
+            img.save(f"generated_certi/{u_id}_gen_certi.png")
 
         elif ceri_template == 2:
 
@@ -149,7 +157,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((4410, 3295), by2, font=myFont3, fill=(87, 84, 81), anchor='mm')
             d1.text((4410, 3437), designation2, font=myFont4, fill=(90, 84, 81), anchor='mm')
 
-            img.save(f"generated_certi/{u_id}gen_certi.png")
+            img.save(f"generated_certi/{u_id}_gen_certi.png")
 
         elif ceri_template == 3:
 
@@ -181,8 +189,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1584, 1174), by2, font=myFont5, fill=(255, 157, 43), anchor='mm')
             d1.text((1584, 1214), designation2, font=myFont6, fill=(0, 0, 0), anchor='mm')
 
-            img.save(f"generated_certi/{u_id}gen_certi.png")
-
+            img.save(f"generated_certi/{u_id}_gen_certi.png")
 
         elif ceri_template == 4:
 
@@ -216,15 +223,16 @@ def stage2(ceri_template: int, db: Session):
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
 
             img.save(f"generated_certi/{u_id}_gen_certi.png")
+
         else:
             return "Template not found"
 
-
-
     with open("css.csv", "w") as f:
         f.truncate(0)
-    #return f'generated_certi/{u_id}_gen_certi.png'
-    return f'generated_certi/{u_id}_gen_certi.png'
+    return "sucessfull"
 
 
-
+def download():
+    path = os.path.abspath('generated_certi')
+    shutil.make_archive('another', 'zip', path)
+    return 'generated_certi/2_gen_certi.png'

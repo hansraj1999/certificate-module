@@ -19,8 +19,8 @@ async def stage1(request: schemas.Upload, db: Session = Depends(get_db)):
     return admin.stage1(db, request)
 
 
-@router.get('/stage2', response_class=FileResponse, status_code=status.HTTP_201_CREATED)
-def stage2(select: int, db: Session = Depends(get_db)):
+@router.get('/stage2', status_code=status.HTTP_201_CREATED)
+async def stage2(select: int, db: Session = Depends(get_db)):
     return admin.stage2(select, db)
 
 
@@ -28,4 +28,8 @@ def stage2(select: int, db: Session = Depends(get_db)):
 def show_all(db: Session = Depends(get_db)):
     return admin.show_all(db)
 
+
+@router.get('/download', )
+async def download():
+    return FileResponse(admin.download(),media_type='image/png')
 
