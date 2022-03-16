@@ -4,7 +4,7 @@ import models
 import uvicorn
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+import os,glob
 
 app = FastAPI()
 app.include_router(admin.router)
@@ -28,7 +28,11 @@ app.add_middleware(
 
 @app.get('/')
 def home():
-    return 'home'
+    return os.listdir()
+@app.get('/1')
+def home():
+    return os.path.abspath("")
+
 
 
 if __name__ == "__main__":
