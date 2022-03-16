@@ -4,12 +4,12 @@ from sqlalchemy.orm import sessionmaker
 import _mysql_connector
 import sqlite3
 
-# SQLALCHAMY_DB_URL = 'sqlite:///./data.db'
+SQLALCHAMY_DB_URL = 'sqlite:///./data.db'
 
-# engine = create_engine(SQLALCHAMY_DB_URL,connect_args={'check_same_thread': False})
+engine = create_engine(SQLALCHAMY_DB_URL, connect_args={'check_same_thread': False})
 
-SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://root:root@localhost:3306/main'
-engine = create_engine(SQLALCHAMY_DB_URL)
+#SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://root:root@localhost:3306/main'
+#engine = create_engine(SQLALCHAMY_DB_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
