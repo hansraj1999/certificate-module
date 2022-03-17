@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, BackgroundTasks
 from routers import admin
 import models
 import uvicorn
@@ -17,6 +17,9 @@ origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:8080",
+    "https://sskveky2pn.us-east-1.awsapprunner.com/"
+    "https://sskveky2pn.us-east-1.awsapprunner.com/admin/uploadcsv"
+
 ]
 
 app.add_middleware(
@@ -28,9 +31,12 @@ app.add_middleware(
 )
 
 
-@app.get('/',response_class=FileResponse)
-def home():
-    return shutil.make_archive('new', 'zip', 'generated_certi')
+@app.get('/')
+async def home(background_tasks: BackgroundTasks):
+    pass
+
+
+
 @app.get('/1')
 def home():
     return os.path.abspath("")
