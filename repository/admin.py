@@ -231,9 +231,9 @@ def find(u_id, db: Session):
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                      models.Upload.name).filter(models.Upload.id == u_id).first()
     if query == None:
-        return query
-    else:
         return 'Not Found'
+    else:
+        return query
 
 
 def download():
