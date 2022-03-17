@@ -20,6 +20,7 @@ origins = [
     "https://sskveky2pn.us-east-1.awsapprunner.com/"
     "https://sskveky2pn.us-east-1.awsapprunner.com/admin/uploadcsv"
 
+
 ]
 
 app.add_middleware(
