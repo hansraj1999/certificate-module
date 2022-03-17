@@ -17,8 +17,8 @@ origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:8080",
-    "https://sskveky2pn.us-east-1.awsapprunner.com/"
-    "https://sskveky2pn.us-east-1.awsapprunner.com/admin/uploadcsv"
+    "https://sskveky2pn.us-east-1.awsapprunner.com/",
+    "https://sskveky2pn.us-east-1.awsapprunner.com/admin/uploadcsv",
 
 
 ]
