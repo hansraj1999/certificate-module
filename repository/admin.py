@@ -6,7 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
 import schemas, os, models, csv, textwrap, shutil, zipfile
 import pandas as pd
-from fpdf import FPDF
+import img2pdf
+
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -67,9 +68,8 @@ def stage1(db: Session, request: schemas.Upload):
 
 def stage2(ceri_template: int, db: Session):
     if os.path.exists('generated_certi'):
-        if len(os.listdir('generated_certi/')) != 0:
-            shutil.rmtree('generated_certi/')
-            os.mkdir('generated_certi')
+        shutil.rmtree('generated_certi/')
+        os.mkdir('generated_certi')
     else:
         os.mkdir('generated_certi')
 
@@ -105,6 +105,7 @@ def stage2(ceri_template: int, db: Session):
             # This method returns the image object.
 
             img = Image.open('templates/certi1.png')
+            img.size(120,120)
             d1 = ImageDraw.Draw(img)
             certi_of = "OF" + " " + certi_of.upper()
 
@@ -189,7 +190,7 @@ def stage2(ceri_template: int, db: Session):
             img.save(f"generated_certi/{u_id}_gen_certi.png")
 
         elif ceri_template == 4:
-
+            file='op.pdf'
             img = Image.open('templates/certi4.png')
             d1 = ImageDraw.Draw(img)
             certi_of = "Of " + certi_of.upper()
@@ -218,29 +219,19 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1612, 1241), designation, font=myFont5, fill=(41, 169, 225), anchor='mm')
             d1.text((746, 1202), by2, font=myFont4, fill=(255, 255, 225), anchor='mm')
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
-
             img.save(f"generated_certi/{u_id}_gen_certi.png")
-            img.show()
+
         else:
             return "Template not found"
 
     with open("css.csv", "w") as f:
         f.truncate(0)
-    return "sucessfull"
+    return 'success'
 
 
 def download():
-    path = os.path.abspath('generated_certi')
-    return 'another.zip'
+    if os.path.exists('generated_certi'):
+        with open("output/Images.pdf", "wb") as f:
+            f.write(img2pdf.convert(['generated_certi/'+i[0:] for i in os.listdir('generated_certi/') if i.endswith(".png")]))
+            return 'output/Images.pdf'
 
-def show():
-    pdf = FPDF()
-    pdf.set_auto_page_break(0)
-    img_list = [x for x in os.listdir('generated_certi/')]
-    print(img_list)
-    for img in img_list:
-        img = 'generated_certi/'+img[0:]
-        pdf.add_page()
-        pdf.image(img)
-    pdf.output("output/Images.pdf")
-    return 'output/Images.pdf'

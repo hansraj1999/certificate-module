@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, UploadFile, File, Form
 from fastapi.responses import HTMLResponse
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse , StreamingResponse
 from sqlalchemy.orm import Session
 from repository import admin
 from database import get_db
@@ -26,14 +26,10 @@ async def stage2(select: int, db: Session = Depends(get_db)):
 
 @router.get('/show_all')
 def show_all(db: Session = Depends(get_db)):
-    return admin.show_all(db)
+    return (admin.show_all(db))
 
 
 @router.get('/download')
-async def download():
-    return FileResponse(admin.download())
+def download():
+    return FileResponse(admin.download(),media_type="application/pdf",filename='download.pdf')
 
-
-@router.get('/download_pdf')
-async def download():
-    return FileResponse(admin.show())
