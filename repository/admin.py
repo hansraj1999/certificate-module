@@ -223,7 +223,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((746, 1241), designation2, font=myFont5, fill=(41, 169, 225), anchor='mm')
 
             img.save(f"generated_certi/{u_id}_gen_certi.png")
-
+            img.show()
         else:
             return "Template not found"
 
