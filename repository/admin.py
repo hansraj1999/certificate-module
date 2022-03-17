@@ -4,10 +4,9 @@ from fastapi import HTTPException, status
 from fastapi import UploadFile, File
 from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
-import schemas, os, models, csv, textwrap, shutil,zipfile
+import schemas, os, models, csv, textwrap, shutil, zipfile
 import pandas as pd
-
-
+from fpdf import FPDF
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -67,7 +66,6 @@ def stage1(db: Session, request: schemas.Upload):
 
 
 def stage2(ceri_template: int, db: Session):
-
     if os.path.exists('generated_certi'):
         if len(os.listdir('generated_certi/')) != 0:
             shutil.rmtree('generated_certi/')
@@ -75,16 +73,15 @@ def stage2(ceri_template: int, db: Session):
     else:
         os.mkdir('generated_certi')
 
-
-
     geting_index = db.query(models.Upload.id).order_by(models.Upload.id.desc()).first()
     font_id = 1
     certi = pd.read_csv('css.csv')
-    no_of_certi=len(certi)
-    index = int(geting_index['id'])-no_of_certi+1
-    querry = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1, models.Upload.by2
-                    , models.Upload.designation1, models.Upload.designation2, models.Upload.name).filter(models.Upload.id >= index).all()
-
+    no_of_certi = len(certi)
+    index = int(geting_index['id']) - no_of_certi + 1
+    querry = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
+                      models.Upload.by2
+                      , models.Upload.designation1, models.Upload.designation2, models.Upload.name).filter(
+        models.Upload.id >= index).all()
 
     for i in querry:
 
@@ -234,5 +231,16 @@ def stage2(ceri_template: int, db: Session):
 
 def download():
     path = os.path.abspath('generated_certi')
-    shutil.make_archive('another', 'zip', path)
-    return 'generated_certi/2_gen_certi.png'
+    return 'another.zip'
+
+def show():
+    pdf = FPDF()
+    pdf.set_auto_page_break(0)
+    img_list = [x for x in os.listdir('generated_certi/')]
+    print(img_list)
+    for img in img_list:
+        img = 'generated_certi/'+img[0:]
+        pdf.add_page()
+        pdf.image(img)
+    pdf.output("output/Images.pdf")
+    return 'output/Images.pdf'

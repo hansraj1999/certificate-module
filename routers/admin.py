@@ -29,7 +29,11 @@ def show_all(db: Session = Depends(get_db)):
     return admin.show_all(db)
 
 
-@router.get('/download', )
+@router.get('/download')
 async def download():
-    return FileResponse(admin.download(),media_type='image/png')
+    return FileResponse(admin.download())
 
+
+@router.get('/download_pdf')
+async def download():
+    return FileResponse(admin.show())

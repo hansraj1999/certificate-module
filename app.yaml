@@ -1,2 +1,2 @@
-runtime: 3.10.1
+runtime: 3.9
 entrypoint: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
