@@ -30,7 +30,7 @@ def logout():
 
 
 @router.post('/', response_model=schemas.ShowUser)
-def create_user(request: schemas.User, db: Session = Depends(database.get_db)):
+def create_user(request: schemas.CreateUser, db: Session = Depends(database.get_db)):
     new_user = models.User(name=request.name, email=request.email, password=request.password)
     db.add(new_user)
     db.commit()
