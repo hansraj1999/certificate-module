@@ -19,6 +19,12 @@
     </form>
 
 <script>
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization",sessionStorage.getItem("token"));
+    myHeaders.append('Content-Type','application/json');
+    console.log(sessionStorage.getItem("token"));
+
     formElem.onsubmit = async (e) => {
       e.preventDefault();
       var form = document.querySelector("#formElem");
@@ -34,9 +40,7 @@
         }
         let response = await fetch('http://127.0.0.1:8000/admin/stage1', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: myHeaders,
                 body: JSON.stringify(data),
         })
         let text = await response.text(); // read response body as text

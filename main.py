@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, BackgroundTasks
-from routers import admin
+from routers import admin,authentication
 import models
 import uvicorn
 from database import engine
@@ -8,6 +8,8 @@ import os
 
 app = FastAPI()
 app.include_router(admin.router)
+app.include_router(authentication.router)
+
 models.Base.metadata.create_all(bind=engine)
 
 origins = [

@@ -17,14 +17,20 @@
 </body>
 </html>
 <script>
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization",sessionStorage.getItem("token"));
+    console.log(sessionStorage.getItem("token"));
+
     formElem.onsubmit = async (e) => {
     e.preventDefault();
     let response = await fetch('http://127.0.0.1:8000/admin/uploadcsv', {
       method: 'POST',
-      body: new FormData(formElem)
+      body: new FormData(formElem),
+      headers:myHeaders
     });
     let result = await response.json();
     if(result['response']=="True"){
+        let x = document.cookie;
         window.location.href="test2.html";
     }
   };

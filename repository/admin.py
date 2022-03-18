@@ -3,10 +3,10 @@ from fastapi import HTTPException, status
 from fastapi import UploadFile, File
 from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
-import schemas, os, models, csv, textwrap, shutil
+import schemas, os, models, csv, textwrap, shutil, img2pdf
 import pandas as pd
-import img2pdf
 
+domain = 'http://127.0.0.1:8000'
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -77,11 +77,11 @@ def stage2(ceri_template: int, db: Session):
     certi = pd.read_csv('css.csv')
     no_of_certificates = len(certi)
     index = int(getting_index['id']) - no_of_certificates + 1
-    querry = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
+    query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                       models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                       models.Upload.name).filter(models.Upload.id >= index).all()
 
-    for i in querry:
+    for i in query:
 
         u_id = str(i['id'])
         certi_of = str(i['certi_of'])
@@ -98,6 +98,8 @@ def stage2(ceri_template: int, db: Session):
         designation = designation1.title()
         by2 = by2.title()
         designation2 = designation2.title()
+        url = f'{domain}+/admin/find?select={u_id}'
+     #   qrcode_url = (url)
 
         if ceri_template == 1:
             # This method returns the image object.
@@ -123,7 +125,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((314, 1257), designation, font=myfont5, fill=(209, 182, 86), anchor='mm')
             d1.text((1215, 1211), by2, font=myfont4, fill=(0, 0, 0), anchor='mm')
             d1.text((1215, 1260), designation2, font=myfont5, fill=(209, 182, 86), anchor='mm')
-            img.save(f"generated_certificate/{u_id}_generated_certificate.png")
+            reduced_size = img.resize((1000, 707))
+            reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
         elif ceri_template == 2:
 
@@ -151,8 +154,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1382, 3437), designation, font=myfont4, fill=(90, 84, 81), anchor='mm')
             d1.text((4410, 3295), by2, font=myfont3, fill=(87, 84, 81), anchor='mm')
             d1.text((4410, 3437), designation2, font=myfont4, fill=(90, 84, 81), anchor='mm')
-
-            img.save(f"generated_certificate/{u_id}_generated_certificate.png")
+            reduced_size = img.resize((1056*3, 816*3))
+            reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
         elif ceri_template == 3:
 
@@ -183,11 +186,10 @@ def stage2(ceri_template: int, db: Session):
             d1.text((720, 1214), designation, font=myfont6, fill=(0, 0, 0), anchor='mm')
             d1.text((1584, 1174), by2, font=myfont5, fill=(255, 157, 43), anchor='mm')
             d1.text((1584, 1214), designation2, font=myfont6, fill=(0, 0, 0), anchor='mm')
-
-            img.save(f"generated_certificate/{u_id}_generated_certificate.png")
+            reduced_size = img.resize((1000, 707))
+            reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
         elif ceri_template == 4:
-            file='op.pdf'
             img = Image.open('templates/certi4.png')
             d1 = ImageDraw.Draw(img)
             certi_of = "Of " + certi_of.upper()
@@ -216,7 +218,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1612, 1241), designation, font=myfont5, fill=(41, 169, 225), anchor='mm')
             d1.text((746, 1202), by2, font=myfont4, fill=(255, 255, 225), anchor='mm')
             d1.text((746, 1241), designation2, font=myfont5, fill=(41, 169, 225), anchor='mm')
-            img.save(f"generated_certificate/{u_id}_generated_certificate.png")
+            reduced_size = img.resize((1000, 707))
+            reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
         else:
             return "Template not found"
@@ -241,4 +244,23 @@ def download():
         with open("output/Images.pdf", "wb") as f:
             f.write(img2pdf.convert(['generated_certificate/'+i[0:] for i in os.listdir('generated_certificate/') if i.endswith(".png")]))
             return 'output/Images.pdf'
+
+
+def delete(u_id, db: Session):
+    if find(u_id, db) != 'Not Found':
+        db.query(models.Upload).filter(models.Upload.id == u_id).delete()
+        db.commit()
+        return 'User Deleted'
+    else:
+        return f'{u_id} Not Exists'
+
+
+def update(u_id, name, db: Session):
+    if find(u_id, db) != 'Not Found':
+        db.query(models.Upload.name).filter(models.Upload.id == u_id)
+        db.query(models.Upload).filter(models.Upload == u_id).update({models.Upload.name: name})
+        db.commit()
+        return 'User Updated'
+    else:
+        return f'{u_id} Not Exists'
 
