@@ -47,3 +47,4 @@ def delete(select: int, db: Session = Depends(get_db), current_user: schemas.Use
 @router.put('/update')
 def update(select: int, name: str, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     return admin.update(select, name, db)
+
