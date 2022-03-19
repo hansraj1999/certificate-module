@@ -250,6 +250,7 @@ def delete(u_id, db: Session):
     if find(u_id, db) != 'Not Found':
         db.query(models.Upload).filter(models.Upload.id == u_id).delete()
         db.commit()
+
         return 'User Deleted'
     else:
         return f'{u_id} Not Exists'
@@ -257,8 +258,7 @@ def delete(u_id, db: Session):
 
 def update(u_id, name, db: Session):
     if find(u_id, db) != 'Not Found':
-        db.query(models.Upload.name).filter(models.Upload.id == u_id)
-        db.query(models.Upload).filter(models.Upload == u_id).update({models.Upload.name: name})
+        db.query(models.Upload).filter(models.Upload.id == u_id).update({models.Upload.name: name})
         db.commit()
         return 'User Updated'
     else:
