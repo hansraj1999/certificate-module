@@ -31,15 +31,7 @@ app.add_middleware(
 )
 
 
-@app.get('/')
-async def home(background_tasks: BackgroundTasks):
-    pass
 
-
-
-@app.get('/1')
-def home():
-    return os.path.abspath("")
 
 
 
