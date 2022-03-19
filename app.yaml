@@ -1,2 +1,2 @@
 runtime: python39
-entrypoint: python3 main.py
+entrypoint: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
