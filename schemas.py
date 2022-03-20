@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class UploadBase(BaseModel):
     id: int
     date_uploaded: str
