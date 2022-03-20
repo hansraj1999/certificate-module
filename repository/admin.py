@@ -8,6 +8,7 @@ import pandas as pd
 
 domain = 'http://127.0.0.1:8000'
 
+
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
     return rows
@@ -47,7 +48,7 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
 
         if converted_csv.empty:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"error in uploading the csv file")
-        return {'response': 'True'}
+        return converted_csv,True
 
 
 def stage1(db: Session, request: schemas.Upload):
