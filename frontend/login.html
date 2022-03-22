@@ -7,13 +7,8 @@
     <title>Login</title>
 </head>
 <body>
-    <!-- <form method="post" enctype="multipart/form-data" id="formElem">
-        <input type="email" name="username" id='1'>
-        <input type="password" name="password" id='2'>
-        <button type="submit">Submit</button>
-    </form> -->
         
-        <div class="container-fluid" id="">
+<div class="container-fluid" id="">
     
 
   <div class="row" style="margin-top: 7%;">
@@ -64,7 +59,7 @@
        else{
         sessionStorage.setItem("token","Bearer ".concat(result['access_token'] ));
         console.log(sessionStorage.getItem("token"));
-        window.location.href="startuploading.html";
+        window.location.href="start-uploading.html";
        }
 
   };

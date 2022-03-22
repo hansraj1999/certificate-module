@@ -62,8 +62,15 @@ def stage1(db: Session, request: schemas.Upload):
             db.add(new)
             db.commit()
             db.refresh(new)
-
-    return 'success'
+    getting_index = db.query(models.Upload.id).order_by(models.Upload.id.desc()).first()
+    font_id = 1
+    certi = pd.read_csv('css.csv')
+    no_of_certificates = len(certi)
+    index = int(getting_index['id']) - no_of_certificates + 1
+    query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
+                     models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
+                     models.Upload.name).filter(models.Upload.id >= index).all()
+    return query,True
 
 
 def stage2(ceri_template: int, db: Session):
@@ -227,7 +234,7 @@ def stage2(ceri_template: int, db: Session):
 
     with open("css.csv", "w") as f:
         f.truncate(0)
-    return 'success'
+    return True
 
 
 def find(u_id, db: Session):
@@ -264,4 +271,6 @@ def update(u_id, name, db: Session):
         return 'User Updated'
     else:
         return f'{u_id} Not Exists'
+
+
 
