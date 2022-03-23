@@ -16,7 +16,11 @@ def show_all(db: Session):
 
 def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
     if not css.filename.endswith(".csv"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only Csv file")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only CSV file")
+
+    elif name_in_which_col not in [1, 2] or email_in_which_col not in [1, 2]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Column Number Range can only be in 1-2")
+
     else:
         header = [1, 2]
         temp = [name_in_which_col, email_in_which_col]
@@ -47,8 +51,8 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
             converted_csv = dataframe
 
         if converted_csv.empty:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"error in uploading the csv file")
-        return converted_csv,True
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error in uploading the CSV file")
+        return converted_csv, True
 
 
 def stage1(db: Session, request: schemas.Upload):
@@ -70,7 +74,7 @@ def stage1(db: Session, request: schemas.Upload):
     query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                      models.Upload.name).filter(models.Upload.id >= index).all()
-    return query,True
+    return query, True
 
 
 def stage2(ceri_template: int, db: Session):
@@ -133,6 +137,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((314, 1257), designation, font=myfont5, fill=(209, 182, 86), anchor='mm')
             d1.text((1215, 1211), by2, font=myfont4, fill=(0, 0, 0), anchor='mm')
             d1.text((1215, 1260), designation2, font=myfont5, fill=(209, 182, 86), anchor='mm')
+            d1.text((1886, 74), u_id, font=myfont5, fill=(41, 169, 225), anchor='mm')
+
             reduced_size = img.resize((1000, 707))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -162,6 +168,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1382, 3437), designation, font=myfont4, fill=(90, 84, 81), anchor='mm')
             d1.text((4410, 3295), by2, font=myfont3, fill=(87, 84, 81), anchor='mm')
             d1.text((4410, 3437), designation2, font=myfont4, fill=(90, 84, 81), anchor='mm')
+            d1.text((317, 304), u_id, font=myfont4, fill=(41, 169, 225), anchor='mm')
+
             reduced_size = img.resize((1056*3, 816*3))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -194,6 +202,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((720, 1214), designation, font=myfont6, fill=(0, 0, 0), anchor='mm')
             d1.text((1584, 1174), by2, font=myfont5, fill=(255, 157, 43), anchor='mm')
             d1.text((1584, 1214), designation2, font=myfont6, fill=(0, 0, 0), anchor='mm')
+            d1.text((93, 276), u_id, font=myfont5, fill=(41, 169, 225), anchor='mm')
+
             reduced_size = img.resize((1000, 707))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -226,6 +236,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((1612, 1241), designation, font=myfont5, fill=(41, 169, 225), anchor='mm')
             d1.text((746, 1202), by2, font=myfont4, fill=(255, 255, 225), anchor='mm')
             d1.text((746, 1241), designation2, font=myfont5, fill=(41, 169, 225), anchor='mm')
+            d1.text((1833, 103), u_id, font=myfont5, fill=(41, 169, 225), anchor='mm')
+
             reduced_size = img.resize((1000, 707))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -240,9 +252,9 @@ def stage2(ceri_template: int, db: Session):
 def find(u_id, db: Session):
     query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
-                     models.Upload.name).filter(models.Upload.id == u_id).first()
+                     models.Upload.name,models.Upload.email).filter(models.Upload.id == u_id).first()
     if query == None:
-        return 'Not Found'
+        return False
     else:
         return query
 
@@ -265,7 +277,7 @@ def delete(u_id, db: Session):
 
 
 def update(u_id, name, db: Session):
-    if find(u_id, db) != 'Not Found':
+    if find(u_id, db) != False:
         db.query(models.Upload).filter(models.Upload.id == u_id).update({models.Upload.name: name})
         db.commit()
         return 'User Updated'
