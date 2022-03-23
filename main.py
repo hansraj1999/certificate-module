@@ -4,7 +4,6 @@ import models
 import uvicorn
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-import os
 
 app = FastAPI()
 app.include_router(admin.router)

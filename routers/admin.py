@@ -28,8 +28,8 @@ def show_all(db: Session = Depends(get_db), current_user: schemas.User = Depends
     return admin.show_all(db)
 
 
-@router.get('/find')
-async def find(select: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+@router.post('/find')
+async def find(select: int = Form(...), db: Session = Depends(get_db)):
     return admin.find(select, db)
 
 
@@ -39,12 +39,12 @@ def download(current_user: schemas.User = Depends(oauth2.get_current_user)):
 
 
 @router.delete('/delete')
-def delete(select: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+def delete(select: int = Form(...), db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     return admin.delete(select, db)
 
 
 @router.put('/update')
-def update(select: int, name: str, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+def update(select: int = Form(...), name: str = Form(...), db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     return admin.update(select, name, db)
 
 
