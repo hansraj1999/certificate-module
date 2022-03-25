@@ -14,7 +14,6 @@ def show_all(db: Session):
     return rows
 
 
-
 def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile = File(...)):
     if not css.filename.endswith(".csv"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Upload only Csv file")
@@ -49,7 +48,7 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
 
         if converted_csv.empty:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"error in uploading the csv file")
-        return converted_csv,True
+        return converted_csv, True
 
 
 def stage1(db: Session, request: schemas.Upload):
@@ -64,14 +63,13 @@ def stage1(db: Session, request: schemas.Upload):
             db.commit()
             db.refresh(new)
     getting_index = db.query(models.Upload.id).order_by(models.Upload.id.desc()).first()
-    font_id = 1
     certi = pd.read_csv('css.csv')
     no_of_certificates = len(certi)
     index = int(getting_index['id']) - no_of_certificates + 1
     query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                      models.Upload.name).filter(models.Upload.id >= index).all()
-    return query,True
+    return query, True
 
 
 def stage2(ceri_template: int, db: Session):
@@ -111,7 +109,6 @@ def stage2(ceri_template: int, db: Session):
      #   qrcode_url = (url)
 
         if ceri_template == 1:
-            # This method returns the image object.
 
             img = Image.open('templates/certi1.png')
             d1 = ImageDraw.Draw(img)
@@ -242,7 +239,7 @@ def find(u_id, db: Session):
     query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                      models.Upload.name).filter(models.Upload.id == u_id).first()
-    if query == None:
+    if not query:
         return 'Not Found'
     else:
         return query

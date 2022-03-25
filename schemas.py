@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, EmailStr
+from typing import Optional, List
 
 
 class UploadBase(BaseModel):
@@ -61,3 +61,7 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+class EmailSchema(BaseModel):
+    email: EmailStr

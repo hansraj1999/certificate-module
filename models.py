@@ -24,3 +24,13 @@ class User(Base):
     name = Column(String(20))
     email = Column(String(50))
     password = Column(String(256))
+
+
+class Otp(Base):
+    __tablename__ = 'Otp'
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(50))
+    otp = Column(String(6))
+    flags = Column(Integer)
+    valid = Column(Integer, default=12)
