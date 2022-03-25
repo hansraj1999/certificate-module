@@ -88,7 +88,6 @@ def create_admin_stage3(request: schemas.CreateUser, db: Session = Depends(datab
         db.commit()
         db.refresh(new_user)
         return new_user
-
     else:
         return False # not a verified account
 
