@@ -33,4 +33,4 @@ class Otp(Base):
     email = Column(String(50))
     otp = Column(String(6))
     flags = Column(Integer)
-    valid = Column(Integer, default=12)
+    valid = Column(Integer, default=0)

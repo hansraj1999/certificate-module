@@ -65,3 +65,7 @@ class TokenData(BaseModel):
 
 class EmailSchema(BaseModel):
     email: EmailStr
+
+    class Config:
+        orm_mode = True
+
