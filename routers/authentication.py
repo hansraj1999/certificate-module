@@ -119,7 +119,6 @@ async def mail(email: str, otp):
         subject="Otp for Certificate-Module",
         recipients=[email],
         body=f'Your one time password is {otp} for certificate-module',
-        subtype="html"
     )
 
     fm = FastMail(conf)
