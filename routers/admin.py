@@ -5,6 +5,7 @@ from repository import admin
 from database import get_db
 import schemas
 from routers import oauth2
+
 router = APIRouter(tags=['admin'], prefix='/admin')
 
 
@@ -47,4 +48,8 @@ def delete(select: int = Form(...), db: Session = Depends(get_db), current_user:
 def update(select: int = Form(...), name: str = Form(...), db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     return admin.update(select, name, db)
 
+
+@router.get('/finds/{u_id}')
+def finds(u_id, db: Session = Depends(get_db)):
+    return admin.finds(u_id, db)
 

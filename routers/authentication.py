@@ -2,12 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status , Form
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from routers import token
-import database
-import models
-import schemas
+import database, models, schemas, random
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from starlette.responses import JSONResponse
-import random
 
 router = APIRouter(
     tags=['Authentication']
@@ -32,15 +29,15 @@ def logout():
 
 
 @router.post('/create_admin_stage1')
-async def create_admin_stage1(email: schemas.EmailSchema, db: Session = Depends(database.get_db)):
-    user = db.query(models.User).filter(models.User.email == email.email).first()
+async def create_admin_stage1(email: str = Form(...), db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == email).first()
 
     if not user:
-        query = db.query(models.Otp.email, models.Otp.flags).filter(models.Otp.email == email.email).first()
+        query = db.query(models.Otp.email, models.Otp.flags).filter(models.Otp.email == email).first()
 
         if not query:
             gen_otp = random.randint(1000, 9999)
-            new = models.Otp(email=email.email, otp=gen_otp, flags=1)
+            new = models.Otp(email=email, otp=gen_otp, flags=1)
             db.add(new)
             db.commit()
             db.refresh(new)
@@ -48,25 +45,30 @@ async def create_admin_stage1(email: schemas.EmailSchema, db: Session = Depends(
 
         elif query['flags'] < 3:
             gen_otp = random.randint(1000, 9999)
-            db.query(models.Otp).filter(models.Otp.email == email.email).update({models.Otp.flags: (query['flags'] + 1), models.Otp.otp: gen_otp}, synchronize_session=False)
+            db.query(models.Otp).filter(models.Otp.email == email).update({models.Otp.flags: (query['flags'] + 1), models.Otp.otp: gen_otp}, synchronize_session=False)
             db.commit()
+
             await mail(email, gen_otp)
 
         else:
-            return False
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'OTP Sent Too Many Times to {email}')
 
         return True
 
     else:
-        return f'{email.email} already exits'
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{email} already exits')
 
 
 @router.post('/create_admin_stage2')
-async def create_admin_stage2(email: str, gen_otp: int, db: Session = Depends(database.get_db)):
+async def create_admin_stage2(email: str = Form(...), gen_otp: int = Form(...), db: Session = Depends(database.get_db)):
     query = db.query(models.Otp.email, models.Otp.otp).filter(models.Otp.email == email).first()
+    user = db.query(models.User).filter(models.User.email == email).first()
 
-    if not query:
-        return False # email don't exists
+    if user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{email} already completed OTP Validation')
+
+    elif not query:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{email} didnt completed stage 1')
 
     elif int(query['otp']) == gen_otp:
         db.query(models.Otp).filter(models.Otp.email == email).update(
@@ -75,21 +77,23 @@ async def create_admin_stage2(email: str, gen_otp: int, db: Session = Depends(da
         return True
 
     else:
-        return False
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{email} entered Wrong OTP')
 
 
-@router.post('/create_admin_stage3', response_model=schemas.CreateUser)
+@router.post('/create_admin_stage3', status_code=status.HTTP_201_CREATED)
 def create_admin_stage3(request: schemas.CreateUser, db: Session = Depends(database.get_db)):
     query = db.query(models.Otp.valid).filter(models.Otp.email == request.email).first()
-    user = db.query(models.User).filter(models.User.email == request.email).first()
-    if query['valid'] == 1 and not user:
+    user = db.query(models.User.email).filter(models.User.email == request.email).first()
+    if not query:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='OTP Validation not Completed')
+    elif query['valid'] == 1 and not user:
         new_user = models.User(name=request.name, email=request.email, password=request.password)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        return new_user
+        return True
     else:
-        return False # not a verified account
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User already created')
 
 
 @router.get('/{id}', response_model=schemas.ShowUser)
@@ -100,7 +104,7 @@ def get_admin(id: int, db: Session = Depends(database.get_db)):
     return user
 
 
-async def mail(email: schemas.EmailSchema, otp):
+async def mail(email: str, otp):
     conf = ConnectionConfig(
         MAIL_USERNAME="certificatemodule@gmail.com",
         MAIL_FROM="certificatemodule@gmail.com",
@@ -113,7 +117,7 @@ async def mail(email: schemas.EmailSchema, otp):
 
     message = MessageSchema(
         subject="Otp for Certificate-Module",
-        recipients=[email.email],
+        recipients=[email],
         body=f'Your one time password is {otp} for certificate-module',
         subtype="html"
     )

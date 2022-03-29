@@ -10,6 +10,9 @@ engine = create_engine(SQLALCHAMY_DB_URL, connect_args={'check_same_thread': Fal
 # SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://root:root@localhost:3306/main'
 # engine = create_engine(SQLALCHAMY_DB_URL)
 
+# SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://uvayh5ymlkx8ybfd:HJEYCKFKknzzlP7cvlKL@bjylablqdhnmt0gvpyai-mysql.services.clever-cloud.com:3306/bjylablqdhnmt0gvpyai'
+# engine = create_engine(SQLALCHAMY_DB_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

@@ -5,9 +5,11 @@ from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
 import schemas, os, models, csv, textwrap, shutil, img2pdf
 import pandas as pd
+import qrcode
 
-domain = 'http://127.0.0.1:8000'
-
+# domain = 'http://127.0.0.1:8000'
+# make sure to add right domain hans
+domain = 'https://still-harbor-79180.herokuapp.com'
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -105,14 +107,18 @@ def stage2(ceri_template: int, db: Session):
         designation = designation1.title()
         by2 = by2.title()
         designation2 = designation2.title()
-        url = f'{domain}+/admin/find?select={u_id}'
-     #   qrcode_url = (url)
+        url = f'{domain}/admin/finds/{u_id}'
+        qr = qrcode.QRCode(box_size=8)
+        qr.add_data(url)
+        qr.make()
+        img_qr = qr.make_image()
 
         if ceri_template == 1:
 
             img = Image.open('templates/certi1.png')
             d1 = ImageDraw.Draw(img)
             certi_of = "OF" + " " + certi_of.upper()
+            img.paste(img_qr, (660, 1100))
 
             myfont = ImageFont.truetype('font/Amsterdam.ttf', 150)
             myfont2 = ImageFont.truetype('font/Poppins-Medium.ttf', 40)
@@ -131,6 +137,7 @@ def stage2(ceri_template: int, db: Session):
             d1.text((314, 1257), designation, font=myfont5, fill=(209, 182, 86), anchor='mm')
             d1.text((1215, 1211), by2, font=myfont4, fill=(0, 0, 0), anchor='mm')
             d1.text((1215, 1260), designation2, font=myfont5, fill=(209, 182, 86), anchor='mm')
+
             reduced_size = img.resize((1000, 707))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -138,6 +145,11 @@ def stage2(ceri_template: int, db: Session):
 
             img = Image.open('templates/certi2.png')
             d1 = ImageDraw.Draw(img)
+            qr2 = qrcode.QRCode(box_size=18)
+            qr2.add_data(url)
+            qr2.make()
+            img_qr2 = qr2.make_image()
+            img.paste(img_qr2, (2450, 3000))
 
             myfont2 = ImageFont.truetype('font/Montserrat-Medium.ttf', 85)
             myfont3 = ImageFont.truetype('font/Montserrat-SemiBold.ttf', 85)
@@ -167,6 +179,7 @@ def stage2(ceri_template: int, db: Session):
 
             img = Image.open('templates/certi3.png')
             d1 = ImageDraw.Draw(img)
+            img.paste(img_qr, (1050, 1000))
 
             certi_of = "CERTIFICATE OF" + " " + certi_of.upper()
             name = name.upper()
@@ -199,6 +212,7 @@ def stage2(ceri_template: int, db: Session):
             img = Image.open('templates/certi4.png')
             d1 = ImageDraw.Draw(img)
             certi_of = "Of " + certi_of.upper()
+            img.paste(img_qr, (0, 1130))
 
             myfont = ImageFont.truetype('font/Montserrat-ExtraBold.ttf', 50)
             myfont3 = ImageFont.truetype('font/Montserrat-Medium.ttf', 30)
@@ -242,7 +256,18 @@ def find(u_id, db: Session):
     if not query:
         return 'Not Found'
     else:
+       # print(query)
         return query
+
+
+def finds(u_id, db: Session):
+    query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
+                     models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
+                     models.Upload.name).filter(models.Upload.id == int(u_id)).first()
+    if not query:
+        return 'Not Found'
+    else:
+        return f'{u_id} exists with the following details {query}'
 
 
 def download():

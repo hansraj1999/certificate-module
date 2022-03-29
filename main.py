@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Request, BackgroundTasks
-from routers import admin,authentication
+from fastapi import FastAPI
+from routers import admin, authentication
 import models
 import uvicorn
 from database import engine
@@ -14,11 +14,6 @@ models.Base.metadata.create_all(bind=engine)
 origins = [
     "http://localhost",
     "http://localhost:8000",
-    "http://localhost:8080",
-    "https://sskveky2pn.us-east-1.awsapprunner.com/",
-    "https://sskveky2pn.us-east-1.awsapprunner.com/admin/uploadcsv",
-
-
 ]
 
 
@@ -29,6 +24,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get('/')
+def home():
+    return {'details': 'This is home page '}
 
 
 if __name__ == "__main__":
