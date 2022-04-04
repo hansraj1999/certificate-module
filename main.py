@@ -11,12 +11,6 @@ app.include_router(authentication.router)
 
 models.Base.metadata.create_all(bind=engine)
 
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-]
-
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

@@ -1,15 +1,21 @@
-from sqlalchemy.orm import Session
+from PIL import Image, ImageDraw, ImageFont
 from fastapi import HTTPException, status
 from fastapi import UploadFile, File
-from PIL import Image, ImageDraw, ImageFont
 from string import ascii_letters
-import schemas, os, models, csv, textwrap, shutil, img2pdf
+from sqlalchemy.orm import Session
+import csv
+import img2pdf
+import models
+import os
+import schemas
+import shutil
+import textwrap
 import pandas as pd
 import qrcode
 
 # domain = 'http://127.0.0.1:8000'
-# make sure to add right domain hans
 domain = 'https://still-harbor-79180.herokuapp.com'
+
 
 def show_all(db: Session):
     rows = db.query(models.Upload).all()
@@ -256,7 +262,6 @@ def find(u_id, db: Session):
     if not query:
         return 'Not Found'
     else:
-       # print(query)
         return query
 
 

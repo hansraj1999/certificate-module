@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status , Form
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from routers import token
-import database, models, schemas, random
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
+from routers import token
+import database
+import models
+import random
+import schemas
 
 router = APIRouter(
     tags=['Authentication']
