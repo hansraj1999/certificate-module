@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, status, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from repository import admin
@@ -57,5 +57,5 @@ def finds(u_id, db: Session = Depends(get_db)):
 @router.get('/specific_download')
 def specific_download(u_id: int, db: Session = Depends(get_db)):
     if admin.specific_download(u_id, db) == {'response': False}:
-        return False
+        raise HTTPException(status_code=status.HTTP_404_BAD_REQUEST, detail=f"Certificate with {u_id} is not available")
     return FileResponse(admin.specific_download(u_id, db), media_type="application/pdf", filename='download.pdf')
