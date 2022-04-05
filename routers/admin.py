@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from repository import admin
-from database import get_db
+from database.database import get_db
 import schemas
 from routers import oauth2
 
@@ -53,3 +53,9 @@ def update(select: int = Form(...), name: str = Form(...), db: Session = Depends
 def finds(u_id, db: Session = Depends(get_db)):
     return admin.finds(u_id, db)
 
+
+@router.get('/specific_download')
+def specific_download(u_id: int, db: Session = Depends(get_db)):
+    if admin.specific_download(u_id, db) == {'response': False}:
+        return False
+    return FileResponse(admin.specific_download(u_id, db), media_type="application/pdf", filename='download.pdf')

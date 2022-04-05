@@ -4,7 +4,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 from routers import token
-import database
+from database import database
 import models
 import random
 import schemas

@@ -211,6 +211,8 @@ def stage2(ceri_template: int, db: Session):
             d1.text((720, 1214), designation, font=myfont6, fill=(0, 0, 0), anchor='mm')
             d1.text((1584, 1174), by2, font=myfont5, fill=(255, 157, 43), anchor='mm')
             d1.text((1584, 1214), designation2, font=myfont6, fill=(0, 0, 0), anchor='mm')
+            d1.text((1800, 200), u_id, font=myfont6, fill=(255, 157, 43), anchor='mm')
+
             reduced_size = img.resize((1000, 707))
             reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
 
@@ -269,11 +271,17 @@ def finds(u_id, db: Session):
     query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
                      models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
                      models.Upload.name).filter(models.Upload.id == int(u_id)).first()
-    if not query:
-        return 'Not Found'
-    else:
-        return f'{u_id} exists with the following details {query}'
 
+    if not query:
+        return {'response': False}
+    else:
+        return f"{u_id} exists with the following details : "\
+               f" ID = {query['id']}" \
+               f" Certificate By = {str(query['name'])}," \
+               f" Cetificate of = {str(query['certi_of'])}," \
+               f" Cetificate for = {str(query['certi_for'])}," \
+               f" Certificate By = {str(query['by1'])}," \
+               f" Certificate By = {str(query['by2'])}," \
 
 def download():
     if os.path.exists('generated_certificate'):
@@ -301,4 +309,69 @@ def update(u_id, name, db: Session):
         return f'{u_id} Not Exists'
 
 
+def specific_download(u_id, db: Session):
+    query = db.query(models.Upload.id, models.Upload.certi_of, models.Upload.certi_for, models.Upload.by1,
+                     models.Upload.by2, models.Upload.designation1, models.Upload.designation2,
+                     models.Upload.name).filter(models.Upload.id == int(u_id)).first()
+    if os.path.exists('generated_certificate'):
+        shutil.rmtree('generated_certificate/')
+        os.mkdir('generated_certificate')
+    else:
+        os.mkdir('generated_certificate')
+    if not query:
+        return {'response': False}
+    else:
+        u_id = str(query['id'])
+        certi_of = str(query['certi_of'])
+        for_ = str(query['certi_for'])
+        by1 = str(query['by1'])
+        by2 = str(query['by2'])
+        designation1 = str(query['designation1'])
+        designation2 = str(query['designation2'])
+        name = str(query['name'])
+        certi_of = certi_of.title()
+        for_ = for_.title()
+        by = by1.title()
+        name = name.title()
+        designation = designation1.title()
+        by2 = by2.title()
+        designation2 = designation2.title()
+        url = f'{domain}/admin/finds/{u_id}'
+        qr = qrcode.QRCode(box_size=8)
+        qr.add_data(url)
+        qr.make()
+        img_qr = qr.make_image()
 
+        img = Image.open('templates/certi3.png')
+        d1 = ImageDraw.Draw(img)
+        img.paste(img_qr, (1050, 1000))
+
+        certi_of = "CERTIFICATE OF" + " " + certi_of.upper()
+        name = name.upper()
+        by = by.upper()
+        by2 = by2.upper()
+        designation = designation.upper()
+        designation2 = designation2.upper()
+
+        myfont2 = ImageFont.truetype('font/league-gothic.regular.ttf', 85)
+        myfont3 = ImageFont.truetype('font/league-gothic.regular.ttf', 140)
+        myfont4 = ImageFont.truetype('font/Montserrat-Light.ttf', 20)
+        myfont5 = ImageFont.truetype('font/league-gothic.regular.ttf', 40)
+        myfont6 = ImageFont.truetype('font/league-gothic.regular.ttf', 28)
+
+        avg_char_width = sum(myfont4.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count = int((img.size[0] * .95) / avg_char_width)
+        scaled_for = textwrap.fill(text=for_, width=max_char_count - 55)
+
+        d1.text((1208, 270), certi_of, font=myfont2, fill=(255, 157, 43), anchor='mm')
+        d1.text((1208, 650), name, font=myfont3, fill=(255, 157, 43), anchor='mm')
+        d1.text((1208, 770), scaled_for, font=myfont4, fill=(0, 0, 0), anchor='mm')
+        d1.text((720, 1174), by, font=myfont5, fill=(255, 157, 43), anchor='mm')
+        d1.text((720, 1214), designation, font=myfont6, fill=(0, 0, 0), anchor='mm')
+        d1.text((1584, 1174), by2, font=myfont5, fill=(255, 157, 43), anchor='mm')
+        d1.text((1584, 1214), designation2, font=myfont6, fill=(0, 0, 0), anchor='mm')
+        d1.text((1800, 200), u_id, font=myfont6, fill=(255, 157, 43), anchor='mm')
+
+        reduced_size = img.resize((1000, 707))
+        reduced_size.save(f"generated_certificate/{u_id}_generated_certificate.png")
+        return download()
