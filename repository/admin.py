@@ -273,11 +273,11 @@ def finds(u_id, db: Session):
                      models.Upload.name).filter(models.Upload.id == int(u_id)).first()
 
     if not query:
-        return {'response': False}
+        return {'response': 'Error 404 Not Found'}
     else:
         return f"{u_id} exists with the following details : "\
                f" ID = {query['id']}" \
-               f" Certificate By = {str(query['name'])}," \
+               f" Certificate To = {str(query['name'])}," \
                f" Cetificate of = {str(query['certi_of'])}," \
                f" Cetificate for = {str(query['certi_for'])}," \
                f" Certificate By = {str(query['by1'])}," \
