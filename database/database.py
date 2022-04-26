@@ -14,6 +14,9 @@ engine = create_engine(SQLALCHAMY_DB_URL, connect_args={'check_same_thread': Fal
 # engine = create_engine(SQLALCHAMY_DB_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# The sessionmaker factory generates new Session objects when called, creating
+# them given the configurational arguments established here.
+
 
 Base = declarative_base()
 

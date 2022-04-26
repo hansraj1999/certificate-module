@@ -54,7 +54,7 @@ async def create_admin_stage1(email: str = Form(...), db: Session = Depends(data
             await mail(email, gen_otp)
 
         else:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'OTP Sent Too Many Times to {email}')
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'OTP Sent Too Many Times to {email} ')
 
         return True
 

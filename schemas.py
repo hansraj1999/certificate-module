@@ -13,6 +13,9 @@ class UploadBase(BaseModel):
     certi_of: str
     name: str
 
+# Pydantic orm_mode will tell the Pydantic model to read the data even if it is not a dict,
+# but an ORM model (or any other arbitrary object with attributes).
+
 
 class Upload(BaseModel):
     date_uploaded: str

@@ -59,7 +59,7 @@ def upload_csv(name_in_which_col: int, email_in_which_col: int, css: UploadFile 
         return converted_csv, True
 
 
-def stage1(db: Session, request: schemas.Upload):
+def insert_into_db(db: Session, request: schemas.Upload):
     with open("css.csv", "r") as f:
         csv_reader = csv.DictReader(f)
         for get_data in csv_reader:
@@ -80,7 +80,7 @@ def stage1(db: Session, request: schemas.Upload):
     return query, True
 
 
-def stage2(ceri_template: int, db: Session):
+def generate_certificate(ceri_template: int, db: Session):
     if os.path.exists('generated_certificate'):
         shutil.rmtree('generated_certificate/')
         os.mkdir('generated_certificate')
@@ -277,7 +277,7 @@ def finds(u_id, db: Session):
     else:
         return f"{u_id} exists with the following details : "\
                f" ID = {query['id']}" \
-               f" Certificate To = {str(query['name'])}," \
+               f" Certificate By = {str(query['name'])}," \
                f" Cetificate of = {str(query['certi_of'])}," \
                f" Cetificate for = {str(query['certi_for'])}," \
                f" Certificate By = {str(query['by1'])}," \

@@ -15,13 +15,13 @@ async def upload_csv(name_in_which_col: int = Form(...), email_in_which_col: int
 
 
 @router.post('/stage1', status_code=status.HTTP_201_CREATED)
-async def stage1(request: schemas.Upload, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return admin.stage1(db, request)
+async def insert_into_db(request: schemas.Upload, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return admin.insert_into_db(db, request)
 
 
 @router.post('/stage2', status_code=status.HTTP_201_CREATED)
-async def stage2(select: int = Form(...), db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return admin.stage2(select, db)
+async def generate_certificate(select: int = Form(...), db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return admin.generate_certificate(select, db)
 
 
 @router.get('/show_all')
