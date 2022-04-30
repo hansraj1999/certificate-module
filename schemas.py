@@ -5,12 +5,12 @@ from typing import Optional
 class UploadBase(BaseModel):
     id: int
     date_uploaded: str
-    by1: str
+    certificate_by: str
     designation1: str
-    by2: str
+    certificate_by2: str
     designation2: str
-    certi_for: str
-    certi_of: str
+    certificate_for: str
+    certificate_of: str
     name: str
 
 # Pydantic orm_mode will tell the Pydantic model to read the data even if it is not a dict,
@@ -19,12 +19,12 @@ class UploadBase(BaseModel):
 
 class Upload(BaseModel):
     date_uploaded: str
-    by1: str
+    certificate_by: str
     designation1: str
-    by2: str
+    certificate_by2: str
     designation2: str
-    certi_for: str
-    certi_of: str
+    certificate_for: str
+    certificate_of: str
 
     class Config:
         orm_mode = True

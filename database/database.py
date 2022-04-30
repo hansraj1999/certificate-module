@@ -7,8 +7,8 @@ import sqlite3
 SQLALCHAMY_DB_URL = 'sqlite:///database/data.db'
 engine = create_engine(SQLALCHAMY_DB_URL, connect_args={'check_same_thread': False})
 
-#SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://root:root@localhost:3306/main'
-#engine = create_engine(SQLALCHAMY_DB_URL)
+# SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://root:root@localhost:3306/main'
+# engine = create_engine(SQLALCHAMY_DB_URL)
 
 # SQLALCHAMY_DB_URL = 'mysql+mysqlconnector://uvayh5ymlkx8ybfd:HJEYCKFKknzzlP7cvlKL@bjylablqdhnmt0gvpyai-mysql.services.clever-cloud.com:3306/bjylablqdhnmt0gvpyai'
 # engine = create_engine(SQLALCHAMY_DB_URL)
