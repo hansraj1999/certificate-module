@@ -8,7 +8,7 @@ from database import database
 import models
 import random
 import schemas
-
+from .hashing import Hash
 router = APIRouter(
     tags=['Authentication']
 )
@@ -20,7 +20,7 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Invalid Credentials")
 
-    if not (user.password == request.password):
+    if not Hash.verify(user.password, request.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Incorrect Password")
     access_token = token.create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
@@ -87,10 +87,12 @@ async def create_admin_stage2(email: str = Form(...), gen_otp: int = Form(...), 
 def create_admin_stage3(request: schemas.CreateUser, db: Session = Depends(database.get_db)):
     query = db.query(models.Otp.valid).filter(models.Otp.email == request.email).first()
     user = db.query(models.User.email).filter(models.User.email == request.email).first()
+
     if not query:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='OTP Validation not Completed')
+
     elif query['valid'] == 1 and not user:
-        new_user = models.User(name=request.name, email=request.email, password=request.password)
+        new_user = models.User(name=request.name, email=request.email, password=Hash.bcrypt(request.password))
         db.add(new_user)
         db.commit()
         db.refresh(new_user)

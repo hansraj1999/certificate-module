@@ -271,11 +271,11 @@ def finds(u_id, db: Session):
     else:
         return f"{u_id} exists with the following details : "\
                f" ID = {query['id']}" \
-               f" Certificate By = {str(query['name'])}," \
+               f" Certificate Given to = {str(query['name'])}," \
                f" Certificate of = {str(query['certificate_of'])}," \
                f" Certificate for = {str(query['certificate_for'])}," \
                f" Certificate By = {str(query['certificate_by'])}," \
-               f" Certificate By = {str(query['certificate_by2'])}," \
+               f" Certificate By2 = {str(query['certificate_by2'])}," \
 
 
 
